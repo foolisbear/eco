@@ -16,6 +16,7 @@ jobs:
       env:
         KAKAO_MAP_API_KEY: ${{ secrets.KAKAO_MAP_API_KEY }}
       run: |
+        set -e
         sed -i 's|__KAKAO_MAP_API_KEY__|'"${KAKAO_MAP_API_KEY}"'|g' index.html
 
     - name: Debug - Check API Key Replacement
