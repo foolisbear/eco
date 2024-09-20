@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main  # 또는 당신의 주 브랜치 이름
-
+permissions:
+  contents: write
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,7 +16,11 @@ jobs:
       env:
         KAKAO_MAP_API_KEY: ${{ secrets.KAKAO_MAP_API_KEY }}
       run: |
-        sed -i 's/__KAKAO_MAP_API_KEY__/'"$KAKAO_MAP_API_KEY"'/' index.html
+        sed -i 's|__KAKAO_MAP_API_KEY__|'"${KAKAO_MAP_API_KEY}"'|g' index.html
+
+    - name: Debug - Check API Key Replacement
+      run: |
+        grep -n "dapi.kakao.com" index.html
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
