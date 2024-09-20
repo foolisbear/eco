@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개발에 따른 환경 영향 확인 플랫폼</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>개발 영향 확인 플랫폼</h1>
+    <div class="container">
+        <div id="map" class="map-area">
+            <button id="birdzone-button" class="birdzone-button"></button>
+            <button id="lineButton"></button>
+            <button id="breathholeButton"></button>
+            <button id="gressButton"></button>
+
+            <div id="info" class="info-area">
+                <button id="closeInfo" class="close-button"><strong>▼</strong></button>
+                <p style="font-size: 20px; margin-top: 0px; margin-bottom: 5px; text-indent: 8px"><strong>최소개발 비용</strong></p>
+                <p style=" font-size:20px; margin:0"><span id="total-cost">0원</span></p>
+                <p style="text-align:center; margin-bottom:0"><strong>개발 위험도:</strong> <span id="vegetation-level">N/A</span></p>
+                <img id="vegetation-image" src="img/ndvi_1.png" alt="식생 이미지" />
+                <p id="birdzone-warning"></p>
+                <p id="breathHole-warning"></p>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 750px;
+    background-color: #f0f0f0;
+    position: relative; /* 버튼 위치 조정을 위해 relative 위치 지정 */
+}
+
+body {
+    background-image: url(2824536.png);
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(255, 255, 255, 0.2);
+    background-blend-mode: overlay; 
+    margin: 0; /* 기본 여백 제거 */
+    font-family: Arial, sans-serif; /* 기본 폰트 설정 */
+}
+
+h1 {
+    background-image: url(2824536.png);
+    background-size: cover;
+    background-position: center;
+    background-color: rgb(255, 255, 255, 0.2);
+    color: white; /* h1 텍스트 색 */
+    padding: 20px; /* 여백 추가 */
+    margin: 0; 
+    text-align: center;
+    background-blend-mode: overlay; /* 배경 색과 이미지 혼합 모드 설정 */
+}
+
+@keyframes growShrink {
+    0% {
+        transform: scale(0.5); /* 시작 시 크기 */
+        opacity: 0; /* 시작 시 투명도 */
+    }
+
+    50% {
+        transform: scale(1.05); /* 중간 시 크기 */
+        opacity: 1; /* 중간 시 투명도 */
+    }
+
+    100% {
+        transform: scale(1); /* 종료 시 크기 */
+        opacity: 1; /* 종료 시 투명도 */
+    }
+}
+
+.info-area {
+    position: absolute; /* 위치를 절대 좌표로 설정 */
+    top: 0;
+    left: 0;
+    width: 300px;
+    padding: 10px;
+    margin: 0;
+    border: 2px solid rgb(128, 128, 128);
+    border-radius: 10px;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    z-index: 3;
+    display: none; /* 기본적으로 숨김 처리 */
+    animation: growShrink 0.6s ease-in-out; /* 애니메이션 적용 및 지속 시간 설정 */
+    transform-origin: top left; /* 확대 시작 지점을 왼쪽 상단으로 설정 */
+}
+
+.close-button {
+    position: absolute;
+    top: 4px; /* 적절한 위치 조정 */
+    right: 8px; /* 적절한 위치 조정 */
+    background-color: #f0f0f0; /* 배경 색상 */
+    color: rgb(128,128,128); /* 글자 색상 */
+    border: none;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.map-area {
+    flex: 1;
+    height: 100%;
+    transition: flex-grow 0.3s ease;
+    z-index:1;
+}
+
+.birdzone-button {
+    position: absolute;
+    cursor: pointer;
+    z-index: 3;
+    top: 10px;
+    left: 10px;
+    height: 35px;
+    width: 35px;
+    background-color: transparent;
+    background-image: url('bird.png');
+    background-size: 25px; /* 이미지를 버튼 크기에 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
+    border: 2px solid black; /* 초기 테두리 색상 */
+    border-radius: 5px;
+    filter: invert(20%) sepia(39%) saturate(3000%) hue-rotate(100deg) brightness(90%) contrast(107%);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* x-offset, y-offset, blur-radius, color */
+}
+
+#lineButton {
+    position: absolute;
+    cursor: pointer;
+    z-index: 3;
+    top: 55px;
+    left: 10px;
+    height: 35px;
+    width: 35px;
+    background-color: transparent;
+    background-image: url('home.png');
+    background-size: 25px; /* 이미지를 버튼 크기에 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
+    border: 2px solid black; /* 초기 테두리 색상 */
+    border-radius: 5px;
+    filter: invert(20%) sepia(39%) saturate(3000%) hue-rotate(100deg) brightness(90%) contrast(107%);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* x-offset, y-offset, blur-radius, color */
+}
+
+#breathholeButton {
+    position: absolute;
+    cursor: pointer;
+    z-index: 3;
+    top: 100px;
+    left: 10px;
+    height: 35px;
+    width: 35px;
+    background-color: transparent;
+    background-image: url('cave.png');
+    background-size: 25px; /* 이미지를 버튼 크기에 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
+    border: 2px solid black; /* 초기 테두리 색상 */
+    border-radius: 5px;
+    filter: invert(20%) sepia(39%) saturate(3000%) hue-rotate(100deg) brightness(90%) contrast(107%);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* x-offset, y-offset, blur-radius, color */
+}
+
+#gressButton {
+    position: absolute;
+    cursor: pointer;
+    z-index: 3;
+    top: 145px;
+    left: 10px;
+    height: 35px;
+    width: 35px;
+    background-color: transparent;
+    background-image: url('tree.png');
+    background-size: 25px; /* 이미지를 버튼 크기에 맞춤 */
+    background-position: center;
+    background-repeat: no-repeat; /* 이미지가 반복되지 않도록 설정 */
+    border: 2px solid black; /* 초기 테두리 색상 */
+    border-radius: 5px;
+    filter: invert(20%) sepia(39%) saturate(3000%) hue-rotate(100deg) brightness(90%) contrast(107%);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); /* x-offset, y-offset, blur-radius, color */
+}
+
+    #birdzone-warning, #breathHole-warning {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    margin: 0;
+    text-align:center;
+}
+
+#vegetation-image {
+    width: 280px;
+    height: auto; /* 비율을 유지하면서 너비에 맞게 높이 조정 */
+    text-align: center;
+    margin-left:10px;
+    margin-bottom:5px;
+}
