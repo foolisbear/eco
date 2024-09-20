@@ -1,0 +1,4 @@
+# CSP 설정
+webrick:
+  headers:
+    Content-Security-Policy: "default-src 'self' https://dapi.kakao.com; script-src 'self' 'unsafe-inline' https://dapi.kakao.com;"
