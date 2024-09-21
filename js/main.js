@@ -55,6 +55,10 @@ document.getElementById('birdzone-button').addEventListener('click', function ()
         this.style.filter = 'invert(20%) sepia(39%) saturate(4404%) hue-rotate(100deg) brightness(70%) contrast(100%)'; // 밝은 초록색 (on 상태)
     }
 });
+document.getElementById('gressButton').addEventListener('click', function () {
+    polygonsVisible = !polygonsVisible;
+    this.style.filter = polygonsVisible ? toggleFilter : initialFilter;
+});
 function drawallbirdzone(points) {
     circles.forEach(circle => circle.setMap(null));
     circles = [];
