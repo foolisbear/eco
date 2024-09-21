@@ -1,8 +1,10 @@
-let landMoney, siksang, polygonsFromLandMoney = [], polygonsFromsiksang = [];
+let landMoney, siksang, polygonsFromLandMoney = [], polygonsFromSiksang = [];
 let polygonsVisible = false, birdZone = [], breathHole = [], breathHoleMarkers = [];
 let positions = [], polygon = null, isDrawing = false, clickCount = 0;
 let allBreathHoleMarkers = [];
 let markersVisible = false;
+let eojson; // siksang GeoJSON 데이터를 저장할 변수
+
 
 fetch('sq_pt3.geojson')
     .then(response => response.json())
@@ -11,8 +13,11 @@ fetch('sq_pt3.geojson')
 
 fetch('sungsan_ndvi.geojson')
     .then(response => response.json())
-    .then(data => displaySiksangOnMap(data))
-    .catch(error => console.error('식생지수 불러오기 오류:', error));
+    .then(data => {
+        siksangGeojson = data; // geojsonData에 할당
+        displaySiksangOnMap(data); // 기존 함수 호출
+    })
+    .catch(error => console.error('식생지수 불러오기 오류:', error)); 
 
 fetch('BirdZone.json')
     .then(response => response.json())
@@ -54,10 +59,6 @@ document.getElementById('birdzone-button').addEventListener('click', function ()
         circles = []; 
         this.style.filter = 'invert(20%) sepia(39%) saturate(4404%) hue-rotate(100deg) brightness(70%) contrast(100%)'; // 밝은 초록색 (on 상태)
     }
-});
-document.getElementById('gressButton').addEventListener('click', function () {
-    polygonsVisible = !polygonsVisible;
-    this.style.filter = polygonsVisible ? toggleFilter : initialFilter;
 });
 function drawallbirdzone(points) {
     circles.forEach(circle => circle.setMap(null));
@@ -181,7 +182,7 @@ function displayGeoJsonOnMap(geojson) {
             feature.geometry.coordinates.forEach(polygonCoordinates => {
                 polygonCoordinates.forEach(coordinateSet => {
                     var path = coordinateSet.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
-                    polygonsFromLandMoney.push(createPolygon(path, feature.properties.val || 0));
+                    polygonsFromLandMoney.push(createLandMoneyPolygon(path, feature.properties.val || 0));
                 });
             });
         }
@@ -193,12 +194,12 @@ function displaySiksangOnMap(geojson) {
         let coordinates = feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates;
         coordinates.forEach(coordinateSet => {
             var path = coordinateSet.map(coord => new kakao.maps.LatLng(coord[1], coord[0]));
-            polygonsFromsiksang.push(createPolygon(path, feature.properties.VALUE || 0));
+            polygonsFromSiksang.push(createSiksangPolygon(path, feature.properties.VALUE || 0));
         });
     });
 }
 
-function createPolygon(path, value) {
+function createLandMoneyPolygon(path, value) {
     return {
         polygon: new kakao.maps.Polygon({
             map: null,
@@ -206,12 +207,66 @@ function createPolygon(path, value) {
             strokeWeight: 2,
             strokeColor: '#004c80',
             strokeOpacity: 0.8,
-            fillColor: '#A3A3FF',
+            fillColor: '#A3A3FF', // 여기에 필요한 색상을 넣어주세요
             fillOpacity: 0
         }),
         val: value
     };
 }
+
+function createSiksangPolygon(path, value) {
+    const fillColor = getColorBasedOnValue(value);
+
+    return {
+        polygon: new kakao.maps.Polygon({
+            map: null,
+            path: path,
+            strokeWeight: 0,
+            strokeColor: '#000000',
+            strokeOpacity: 0,
+            fillColor: fillColor,
+            fillOpacity: 0.9
+        }),
+        val: value
+    };
+}
+function getColorBasedOnValue(value) {
+    const minValue = 0;
+    const maxValue = 0.5;
+
+    if (value < minValue) {
+        return 'rgba(128, 128, 128, 0.5)'; // 회색
+    } else if (value > maxValue) {
+        return 'rgba(0, 100, 0, 0.5)'; // 짙은 초록색
+    } else {
+        // Normalize the value to a range of 0 to 1
+        const normalizedValue = (value - minValue) / (maxValue - minValue);
+
+        // Ensure the normalized value is between 0 and 1
+        const clampedValue = Math.min(Math.max(normalizedValue, 0), 1);
+
+        // Interpolate between gray and dark green
+        const grayColor = interpolateColor(128, 128, 128, 128, 128, 128, 1 - clampedValue); // 회색
+        const greenColor = interpolateColor(0, 128, 0, 0, 128, 0, clampedValue); // 다크 그린
+
+        // 보간된 색상을 사용하여 최종 색상 반환
+        const r = Math.round(grayColor.r * (1 - clampedValue) + greenColor.r * clampedValue);
+        const g = Math.round(grayColor.g * (1 - clampedValue) + greenColor.g * clampedValue);
+        const b = Math.round(grayColor.b * (1 - clampedValue) + greenColor.b * clampedValue);
+
+        return `rgba(${r}, ${g}, ${b}, 0.5)`; // 최종 색상 반환
+    }
+}
+
+
+function interpolateColor(r1, g1, b1, r2, g2, b2, factor) {
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+    return { r, g, b };
+}
+
+
 
 function checkOverlap() {
     let userPolygonCoords = polygon.getPath().map(latLng => [latLng.getLng(), latLng.getLat()]);
@@ -238,7 +293,7 @@ function checkOverlapAndCalculateAverage() {
     userPolygonCoords.push(userPolygonCoords[0]);
     let userPolygon = turf.polygon([userPolygonCoords]);
 
-    let { totalValue, count } = polygonsFromsiksang.reduce((acc, geoPolygonObj) => {
+    let { totalValue, count } = polygonsFromSiksang.reduce((acc, geoPolygonObj) => {
         let geoCoords = geoPolygonObj.polygon.getPath().map(latLng => [latLng.getLng(), latLng.getLat()]);
         geoCoords.push(geoCoords[0]);
         let turfGeoPolygon = turf.polygon([geoCoords]);
@@ -512,4 +567,12 @@ function adjustImageSize() {
 }
 kakao.maps.event.addListener(map, 'zoom_changed', adjustImageSize);
 adjustImageSize();
+document.getElementById('gressButton').addEventListener('click', function () {
+    polygonsVisible = !polygonsVisible;
 
+    polygonsFromSiksang.forEach(geoPolygonObj => {
+        geoPolygonObj.polygon.setMap(polygonsVisible ? map : null); // 'map'은 Kakao 지도 인스턴스
+    });
+
+    this.style.filter = polygonsVisible ? toggleFilter : initialFilter;
+});
